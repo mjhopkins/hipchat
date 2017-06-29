@@ -24,6 +24,7 @@ description:
 library
   hs-source-dirs:      src
   exposed-modules:     HipChat
+                     , HipChat.Types
                      , HipChat.API.Auth
   build-depends:       base >= 4.7 && < 5
                      , servant
