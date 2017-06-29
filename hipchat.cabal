@@ -27,7 +27,9 @@ library
                      , HipChat.Types
                      , HipChat.API.Auth
                      , HipChat.API.Rooms
+  other-modules:       Control.Lens.AsText
   build-depends:       base >= 4.7 && < 5
+                     , lens
                      , servant
                      , servant-client
                      , text
