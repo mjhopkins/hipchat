@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveAnyClass         #-}
 {-# LANGUAGE DeriveGeneric          #-}
 {-# LANGUAGE FlexibleInstances      #-}
 {-# LANGUAGE FunctionalDependencies #-}
@@ -20,19 +19,24 @@ module HipChat.Auth.Types where
 --------------------------------------------------------------------------------
 
 import           Control.Lens                hiding ((.=))
-import           Control.Lens.AsText
+import           Control.Lens.AsText         (AsText, parse)
+import qualified Control.Lens.AsText         as AsText
 
-import           Data.Aeson
-import           Data.Aeson.Types            (Parser)
-import           Data.String
+import           Data.Aeson                  (FromJSON (parseJSON),
+                                              ToJSON (toJSON), Value (String),
+                                              object, withObject, (.:), (.:?),
+                                              (.=))
+import           Data.String                 (IsString (fromString))
 import           Data.Text                   (Text)
 import qualified Data.Text                   as T
 
-import           GHC.Generics
+import           GHC.Generics                (Generic)
 
-import           Web.FormUrlEncoded          (FromForm, ToForm)
-import           Web.HttpApiData
-import           Web.Internal.FormUrlEncoded
+import           Web.FormUrlEncoded          (FromForm (fromForm),
+                                              ToForm (toForm), parseUnique)
+import           Web.HttpApiData             (FromHttpApiData (parseUrlPiece),
+                                              ToHttpApiData (toUrlPiece),
+                                              parseQueryParam, toQueryParam)
 
 --------------------------------------------------------------------------------
 -- APIScope
@@ -72,21 +76,19 @@ instance AsText APIScope where
       _                   -> Nothing
 
 instance ToHttpApiData APIScope where
-  toUrlPiece = review parse
+  toUrlPiece = AsText.toUrlPiece
 
 instance FromHttpApiData APIScope where
-  parseUrlPiece = matching parse
+  parseUrlPiece = AsText.parseUrlPiece
 
 instance ToJSON APIScope where
-  toJSON = String . (^. re parse)
+  toJSON = AsText.toJSON
 
 instance FromJSON APIScope where
-  parseJSON = withText "text" (f . matching parse)
-    where f :: Either Text APIScope -> Parser APIScope
-          f = either (\t -> fail ("Unexpected API scope: " ++ T.unpack t)) return
+  parseJSON = AsText.parseJSON
 
 instance IsString APIScope where
-  fromString = either (\t -> error $ "Unexpected API scope: " ++ T.unpack t) id . matching parse . T.pack
+  fromString = AsText.fromString
 
 --------------------------------------------------------------------------------
 -- GrantType
@@ -123,20 +125,19 @@ instance AsText GrantType where
      _                    -> Nothing
 
 instance ToHttpApiData GrantType where
-  toUrlPiece = review parse
+  toUrlPiece = AsText.toUrlPiece
 
 instance FromHttpApiData GrantType where
-  parseUrlPiece = matching parse
+  parseUrlPiece = AsText.parseUrlPiece
 
 instance ToJSON GrantType where
-  toJSON = String . (^. re parse)
+  toJSON = AsText.toJSON
 
 instance FromJSON GrantType where
-  parseJSON = withText "text" (f . matching parse)
-    where f = either (\t -> fail $ "Unexpected grant type: " ++ T.unpack t) return
+  parseJSON = AsText.parseJSON
 
 instance IsString GrantType where
-  fromString = either (\t -> error $ "Unexpected grant type: " ++ T.unpack t) id . matching parse . T.pack
+  fromString = AsText.fromString
 
 --------------------------------------------------------------------------------
 -- Token request
