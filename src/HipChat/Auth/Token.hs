@@ -6,12 +6,12 @@
 
 --------------------------------------------------------------------------------
 -- |
--- Module: HipChat.API.Auth
+-- Module: HipChat.Auth.Token
 -- Description: OAuth authenication with the HipChat server
 --
 --------------------------------------------------------------------------------
 
-module HipChat.API.Auth where
+module HipChat.Auth.Token where
 
 import           Data.Monoid        ((<>))
 import           Data.Proxy         (Proxy (..))

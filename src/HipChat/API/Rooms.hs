@@ -10,14 +10,17 @@
 
 module  HipChat.API.Rooms where
 
-import           HipChat.API.Auth (Token, TokenAuth)
-import           HipChat.Types    (RoomId)
 
-import           Data.Proxy       (Proxy (..))
-import           Data.Text        (Text)
-import           Servant.API      ((:>), Capture, JSON, PlainText, Post,
-                                   ReqBody)
-import           Servant.Client   (ClientM, client)
+import           HipChat.Auth.Token (Token, TokenAuth)
+import           HipChat.Types      (RoomId)
+
+
+
+import           Data.Proxy         (Proxy (..))
+import           Data.Text          (Text)
+import           Servant.API        ((:>), Capture, JSON, PlainText, Post,
+                                     ReqBody)
+import           Servant.Client     (ClientM, client)
 
 type RoomsAPI =
   TokenAuth :> "v2" :> Capture "room" RoomId :> "notification" :> ReqBody '[PlainText] Text :> Post '[JSON] ()
