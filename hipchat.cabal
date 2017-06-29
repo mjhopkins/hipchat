@@ -26,6 +26,7 @@ library
   exposed-modules:     HipChat
                      , HipChat.Types
                      , HipChat.API.Auth
+                     , HipChat.API.Rooms
   build-depends:       base >= 4.7 && < 5
                      , servant
                      , servant-client
