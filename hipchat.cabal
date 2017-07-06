@@ -30,13 +30,19 @@ library
   other-modules:       Control.Lens.AsText
                      , HipChat.Auth.Token
                      , HipChat.Auth.Types
+                     , HipChat.Types.URL
   build-depends:       base >= 4.7 && < 5
                      , aeson
+                     , blaze-builder
+                     , bytestring-builder
                      , http-api-data
+                     , http-types
                      , lens
+                     , network-uri
                      , servant
                      , servant-client
                      , text
+                     , utf8-string
   default-language:    Haskell2010
   ghc-options:        -Wall
 
