@@ -28,6 +28,7 @@ library
                      , HipChat.Types
                      , HipChat.API.Rooms
   other-modules:       Control.Lens.AsText
+                     , HipChat.Util
                      , HipChat.Auth.Token
                      , HipChat.Auth.Types
                      , HipChat.AddOn.Icon
