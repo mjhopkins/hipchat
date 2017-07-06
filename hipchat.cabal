@@ -30,6 +30,7 @@ library
   other-modules:       Control.Lens.AsText
                      , HipChat.Auth.Token
                      , HipChat.Auth.Types
+                     , HipChat.AddOn.Icon
                      , HipChat.Types.URL
   build-depends:       base >= 4.7 && < 5
                      , aeson
