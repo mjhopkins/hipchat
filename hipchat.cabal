@@ -33,6 +33,7 @@ library
                      , HipChat.Auth.Types
                      , HipChat.AddOn.Icon
                      , HipChat.AddOn.Key
+                     , HipChat.AddOn.Name
                      , HipChat.Types.URL
   build-depends:       base >= 4.7 && < 5
                      , aeson
