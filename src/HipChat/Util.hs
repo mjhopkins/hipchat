@@ -1,16 +1,22 @@
+{-# LANGUAGE DefaultSignatures     #-}
 {-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE UndecidableInstances  #-}
+{-# OPTIONS_GHC -fno-warn-orphans  #-}
 
 module HipChat.Util
   ( genericToJSON'
   , genericParseJSON'
+  , ToFromJSON
   ) where
 
-import           Data.Aeson.Types (GFromJSON, GToJSON, Options, Parser, Value,
-                                   Zero, defaultOptions, fieldLabelModifier,
-                                   genericParseJSON, genericToJSON,
-                                   omitNothingFields)
+import           Data.Aeson.Types (FromJSON, GFromJSON, GToJSON, Options,
+                                   Parser, ToJSON, Value, Zero, defaultOptions,
+                                   fieldLabelModifier, genericParseJSON,
+                                   genericToJSON, omitNothingFields, parseJSON,
+                                   toJSON)
 import           Data.Char        (toLower)
 import           Data.Proxy       (Proxy (Proxy))
 import           Data.Typeable    (Typeable, typeRep)
@@ -37,3 +43,20 @@ numCharsInType = length . show . typeRep
 uncapitalise :: String -> String
 uncapitalise []      = []
 uncapitalise (h : t) = toLower h : t
+
+class ToFromJSON a where
+  toJSON' :: a -> Value
+  default toJSON' :: (Typeable a, Generic a, GToJSON Zero (Rep a))
+                  => a -> Value
+  toJSON' = genericToJSON $ aesonOpts (Proxy :: Proxy a)
+
+  parseJSON' :: Value -> Parser a
+  default parseJSON' :: (Typeable a, Generic a, GFromJSON Zero (Rep a))
+                     => Value -> Parser a
+  parseJSON' = genericParseJSON $ aesonOpts (Proxy :: Proxy a)
+
+instance {-# OVERLAPPABLE #-} ToFromJSON a => ToJSON a where
+  toJSON = toJSON'
+
+instance {-# OVERLAPPABLE #-} ToFromJSON a => FromJSON a where
+  parseJSON = parseJSON'
