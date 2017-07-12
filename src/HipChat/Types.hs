@@ -7,8 +7,20 @@
 
 module HipChat.Types where
 
-import           Data.Text (Text)
+import           Data.Text         (Text)
+import           Web.HttpApiData
+
+--------------------------------------------------------------------------------
+-- Room and RoomId
+--------------------------------------------------------------------------------
 
 -- | The id or url-encoded name of the room
 -- Valid length range: 1 - 100.
-type RoomId = Text
+data Room = RoomNum RoomId | RoomName Text
+  deriving (Eq, Show)
+
+instance ToHttpApiData Room where
+  toUrlPiece (RoomNum i)  = toUrlPiece i
+  toUrlPiece (RoomName t) = t
+
+type RoomId = Int
