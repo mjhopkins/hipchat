@@ -13,7 +13,7 @@ module Control.Lens.AsText
     , fromString
     ) where
 
-import           Control.Lens     (Prism', matching, re, review, (^.))
+import           Control.Lens     (Prism', matching, prism', re, review, (^.), preview,re)
 import           Data.Aeson       (Value (String), withText)
 import           Data.Aeson.Types (Parser)
 import           Data.Bifunctor   (first)
@@ -24,6 +24,13 @@ import           Data.Typeable    (Typeable, typeRep)
 
 class AsText a where
   parse :: Prism' Text a
+  enc   :: a -> Text
+  dec   :: Text -> Maybe a
+
+  parse = prism' enc dec
+  enc = review parse
+  dec = preview parse
+  {-# MINIMAL parse | enc, dec #-}
 
 instance AsText Text where
   parse = id
