@@ -105,24 +105,23 @@ data GrantType
     deriving (Eq, Show, Read, Generic)
 
 instance AsText GrantType where
-  parse = prism' enc dec where
-    enc = \case
-      AuthorizationCode -> "authorization_code"
-      RefreshToken      -> "refresh_token"
-      Password          -> "password"
-      ClientCredentials -> "client_credentials"
-      Personal          -> "personal"
-      RoomNotification  -> "room_notification"
-      Internal          -> "internal"
-    dec = \case
-     "authorization_code" -> Just AuthorizationCode
-     "refresh_token"      -> Just RefreshToken
-     "password"           -> Just Password
-     "client_credentials" -> Just ClientCredentials
-     "personal"           -> Just Personal
-     "room_notification"  -> Just RoomNotification
-     "internal"           -> Just Internal
-     _                    -> Nothing
+  enc = \case
+    AuthorizationCode -> "authorization_code"
+    RefreshToken      -> "refresh_token"
+    Password          -> "password"
+    ClientCredentials -> "client_credentials"
+    Personal          -> "personal"
+    RoomNotification  -> "room_notification"
+    Internal          -> "internal"
+  dec = \case
+   "authorization_code" -> Just AuthorizationCode
+   "refresh_token"      -> Just RefreshToken
+   "password"           -> Just Password
+   "client_credentials" -> Just ClientCredentials
+   "personal"           -> Just Personal
+   "room_notification"  -> Just RoomNotification
+   "internal"           -> Just Internal
+   _                    -> Nothing
 
 instance ToHttpApiData GrantType where
   toUrlPiece = AsText.toUrlPiece

@@ -24,8 +24,9 @@ description:
 library
   hs-source-dirs:      src
   exposed-modules:     HipChat
-                     , HipChat.Auth
                      , HipChat.Types
+                     , HipChat.Auth
+                     , HipChat.Auth.Types
                      , HipChat.API.Rooms
                      , HipChat.API.Capabilities
                      , HipChat.API.Types
@@ -35,9 +36,6 @@ library
   other-modules:       Control.Lens.AsText
                      , HipChat.Util
                      , HipChat.Auth.Token
-                     , HipChat.Auth.Types
-                     , HipChat.AddOn.Icon
-                     , HipChat.AddOn.Name
                      , HipChat.AddOn.Types.AuthenticationMethod
                      , HipChat.AddOn.Types.RoomEvent
                      , HipChat.AddOn.Dialog
