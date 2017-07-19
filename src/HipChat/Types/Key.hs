@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module HipChat.AddOn.Key where
+module HipChat.Types.Key where
 
 --------------------------------------------------------------------------------
 -- |
--- Module: HipChat.AddOn.Key
+-- Module: HipChat.Key
 --
--- length-restricted key type (1-40 chars), should be unique within some context.
+-- Length-restricted key type (1-40 chars); should be unique (within some context).
 --------------------------------------------------------------------------------
 
 import           Control.Lens
