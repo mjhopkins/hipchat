@@ -31,6 +31,7 @@ library
                      , HipChat.API.Types
                      , HipChat.AddOn.Capabilities
                      , HipChat.AddOn.Registration
+                     , HipChat.AddOn.Types
   other-modules:       Control.Lens.AsText
                      , HipChat.Util
                      , HipChat.Auth.Token

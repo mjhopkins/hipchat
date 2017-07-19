@@ -1,7 +1,15 @@
+--------------------------------------------------------------------------------
+-- |
+-- Module: HipChat.Types.URL
+--
+-- URL type. Wraps an absolute URI.
+--------------------------------------------------------------------------------
+
 module HipChat.Types.URL
   ( URL
   , (/)
   , parseURL
+  , toBaseUrl
   ) where
 
 import           Blaze.ByteString.Builder  (toLazyByteString)
@@ -21,6 +29,8 @@ import           Network.URI               (URI)
 import qualified Network.URI               as URI
 
 import           Prelude                   hiding ((/))
+
+import           Servant.Common.BaseUrl    (BaseUrl, parseBaseUrl)
 
 -- | Wraps an absolute URI
 newtype URL = URL URI
@@ -52,7 +62,12 @@ appendPath (URL uri) xs = URL uri' where
     else id
 
 (/) :: URL -> Text -> URL
-uri / t = appendPath uri [t]
+(/) url = appendPath url . pure
 
 relPath :: [Text] -> String
 relPath = LB.toString . toLazyByteString . encodePathSegments
+
+toBaseUrl :: URL -> BaseUrl
+toBaseUrl (URL u) =
+  let s = show u
+  in fromMaybe (error ("Invalid URL: " <> s)) $ parseBaseUrl s
