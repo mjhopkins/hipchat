@@ -29,6 +29,7 @@ library
                      , HipChat.API.Rooms
                      , HipChat.API.Capabilities
                      , HipChat.API.Types
+                     , HipChat.AddOn.Capabilities
   other-modules:       Control.Lens.AsText
                      , HipChat.Util
                      , HipChat.Auth.Token
@@ -36,12 +37,17 @@ library
                      , HipChat.AddOn.Icon
                      , HipChat.AddOn.Name
                      , HipChat.AddOn.Types.AuthenticationMethod
+                     , HipChat.AddOn.Dialog
+                     , HipChat.AddOn.Glance
                      , HipChat.Types.Key
+                     , HipChat.AddOn.WebPanel
                      , HipChat.Types.URL
   build-depends:       base >= 4.7 && < 5
                      , aeson
+                     , attoparsec
                      , blaze-builder
                      , bytestring-builder
+                     , data-default
                      , http-api-data
                      , http-types
                      , lens
