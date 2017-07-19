@@ -37,6 +37,7 @@ library
                      , HipChat.AddOn.Icon
                      , HipChat.AddOn.Name
                      , HipChat.AddOn.Types.AuthenticationMethod
+                     , HipChat.AddOn.Types.RoomEvent
                      , HipChat.AddOn.Dialog
                      , HipChat.AddOn.Glance
                      , HipChat.Types.Key
