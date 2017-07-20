@@ -19,7 +19,7 @@ module HipChat.Auth.Types where
 --------------------------------------------------------------------------------
 
 import           Control.Lens                hiding ((.=))
-import           Control.Lens.AsText         (AsText, parse)
+import           Control.Lens.AsText         (AsText)
 import qualified Control.Lens.AsText         as AsText
 
 import           Data.Aeson                  (FromJSON (parseJSON),
@@ -54,26 +54,25 @@ data APIScope
   deriving (Show, Read, Eq, Generic)
 
 instance AsText APIScope where
-  parse = prism' enc dec where
-    enc = \case
-      AdminGroup          -> "admin_group"
-      AdminRoom           -> "admin_room"
-      ManageRooms         -> "manage_rooms"
-      SendMessage         -> "send_message"
-      SendNotification    -> "send_notification"
-      ViewGroup           -> "view_group"
-      ViewMessages        -> "view_messages"
-      ViewRoom            -> "view_room"
-    dec = \case
-      "admin_group"       -> Just AdminGroup
-      "admin_room"        -> Just AdminRoom
-      "manage_rooms"      -> Just ManageRooms
-      "send_message"      -> Just SendMessage
-      "send_notification" -> Just SendNotification
-      "view_group"        -> Just ViewGroup
-      "view_messages"     -> Just ViewMessages
-      "view_room"         -> Just ViewRoom
-      _                   -> Nothing
+  enc = \case
+    AdminGroup          -> "admin_group"
+    AdminRoom           -> "admin_room"
+    ManageRooms         -> "manage_rooms"
+    SendMessage         -> "send_message"
+    SendNotification    -> "send_notification"
+    ViewGroup           -> "view_group"
+    ViewMessages        -> "view_messages"
+    ViewRoom            -> "view_room"
+  dec = \case
+    "admin_group"       -> Just AdminGroup
+    "admin_room"        -> Just AdminRoom
+    "manage_rooms"      -> Just ManageRooms
+    "send_message"      -> Just SendMessage
+    "send_notification" -> Just SendNotification
+    "view_group"        -> Just ViewGroup
+    "view_messages"     -> Just ViewMessages
+    "view_room"         -> Just ViewRoom
+    _                   -> Nothing
 
 instance ToHttpApiData APIScope where
   toUrlPiece = AsText.toUrlPiece

@@ -22,13 +22,11 @@ newtype Key = Key { unKey :: Text }
   deriving (Eq, Show)
 
 instance AsText Key where
-  parse = prism' enc dec
-    where
-      enc = unKey
-      dec t = if l >= 1 && l <= 40
-              then Just $ Key t
-              else Nothing
-              where l = T.length t
+  enc = unKey
+  dec t = if l >= 1 && l <= 40
+          then Just $ Key t
+          else Nothing
+          where l = T.length t
 
 instance IsString Key where
   fromString = AsText.fromString
