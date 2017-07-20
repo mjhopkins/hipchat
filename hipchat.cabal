@@ -31,6 +31,7 @@ library
                      , HipChat.API.Capabilities
                      , HipChat.API.Types
                      , HipChat.AddOn.Capabilities
+                     , HipChat.AddOn.Webhooks
                      , HipChat.AddOn.Registration
                      , HipChat.AddOn.Types
   other-modules:       Control.Lens.AsText
@@ -58,6 +59,7 @@ library
                      , servant
                      , servant-client
                      , text
+                     , time
                      , utf8-string
   default-language:    Haskell2010
   ghc-options:        -Wall
