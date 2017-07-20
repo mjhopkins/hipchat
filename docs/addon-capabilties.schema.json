@@ -1,0 +1,1334 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "apiVersion": {
+      "description": "The HipChat Connect API version used by this integration. Defaults to 1:1",
+      "pattern": "^\\d+\\:\\d+$",
+      "type": "string"
+    },
+    "capabilities": {
+      "additionalProperties": true,
+      "description": "The set of capabilities this application supports.",
+      "properties": {
+        "action": {
+          "description": "The ability to add action element to the HipChat client UI",
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "conditions": {
+                "description": "Conditions determine whether this action is shown",
+                "items": {
+                  "type": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "condition": {
+                          "description": "The identifier of a built-in condition.",
+                          "enum": [
+                            "room_is_public",
+                            "user_is_admin",
+                            "user_is_guest",
+                            "user_is_room_owner",
+                            "message_matches",
+                            "message_contains_link",
+                            "message_sent_by_current_user",
+                            "card_matches"
+                          ],
+                          "type": "string"
+                        },
+                        "invert": {
+                          "description": "A flag indicating whether to invert the boolean result of the condition.",
+                          "type": "boolean"
+                        },
+                        "params": {
+                          "additionalProperties": true,
+                          "description": "A map of key/value parameters for a built-in condition.",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "condition"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "conditions": {
+                          "description": "The conditions to compose using the specific logical operator.",
+                          "items": {
+                            "type": [
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "condition": {
+                                    "description": "The identifier of a built-in condition.",
+                                    "enum": [
+                                      "room_is_public",
+                                      "user_is_admin",
+                                      "user_is_guest",
+                                      "user_is_room_owner",
+                                      "message_matches",
+                                      "message_contains_link",
+                                      "message_sent_by_current_user",
+                                      "card_matches"
+                                    ],
+                                    "type": "string"
+                                  },
+                                  "invert": {
+                                    "description": "A flag indicating whether to invert the boolean result of the condition.",
+                                    "type": "boolean"
+                                  },
+                                  "params": {
+                                    "additionalProperties": true,
+                                    "description": "A map of key/value parameters for a built-in condition.",
+                                    "type": "object"
+                                  }
+                                },
+                                "required": [
+                                  "condition"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "conditions": {
+                                    "description": "The conditions to compose using the specific logical operator.",
+                                    "items": {
+                                      "type": [
+                                        {
+                                          "additionalProperties": false,
+                                          "properties": {
+                                            "condition": {
+                                              "description": "The identifier of a built-in condition.",
+                                              "enum": [
+                                                "room_is_public",
+                                                "user_is_admin",
+                                                "user_is_guest",
+                                                "user_is_room_owner",
+                                                "message_matches",
+                                                "message_contains_link",
+                                                "message_sent_by_current_user",
+                                                "card_matches"
+                                              ],
+                                              "type": "string"
+                                            },
+                                            "invert": {
+                                              "description": "A flag indicating whether to invert the boolean result of the condition.",
+                                              "type": "boolean"
+                                            },
+                                            "params": {
+                                              "additionalProperties": true,
+                                              "description": "A map of key/value parameters for a built-in condition.",
+                                              "type": "object"
+                                            }
+                                          },
+                                          "required": [
+                                            "condition"
+                                          ],
+                                          "type": "object"
+                                        }
+                                      ]
+                                    },
+                                    "minLength": 1,
+                                    "type": "array"
+                                  },
+                                  "type": {
+                                    "description": "Defines what logical operator is used to evaluate the list of conditions.",
+                                    "enum": [
+                                      "and",
+                                      "or",
+                                      "AND",
+                                      "OR"
+                                    ],
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "conditions"
+                                ],
+                                "type": "object"
+                              }
+                            ]
+                          },
+                          "minLength": 1,
+                          "type": "array"
+                        },
+                        "type": {
+                          "description": "Defines what logical operator is used to evaluate the list of conditions.",
+                          "enum": [
+                            "and",
+                            "or",
+                            "AND",
+                            "OR"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "conditions"
+                      ],
+                      "type": "object"
+                    }
+                  ]
+                },
+                "minLength": 1,
+                "type": "array"
+              },
+              "key": {
+                "description": "Unique key (in the context of the integration) to identify this action.",
+                "maxLength": 40,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9_\\-\\.]+$",
+                "type": "string"
+              },
+              "location": {
+                "description": "The location of this action",
+                "enum": [
+                  "hipchat.message.action",
+                  "hipchat.input.action"
+                ],
+                "type": "string"
+              },
+              "name": {
+                "additionalProperties": false,
+                "description": "The display name of the action.",
+                "properties": {
+                  "i18n": {
+                    "description": "The optional localization key, used to look up the localized value.",
+                    "maxLength": 40,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "The default text.",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "value"
+                ],
+                "type": "object"
+              },
+              "target": {
+                "description": "Defines how the action is handled in the client, such as opening a dialog or a sidebar.",
+                "type": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "additionalProperties": true,
+                    "properties": {
+                      "key": {
+                        "description": "The key of a dialog, glance or web panel that should be opened in response to this action.",
+                        "maxLength": 40,
+                        "minLength": 1,
+                        "pattern": "^[a-zA-Z0-9_\\-\\.]+$",
+                        "type": "string"
+                      },
+                      "options": {
+                        "additionalProperties": true,
+                        "description": "An object containing options which vary based on the type of target.",
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "key"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              },
+              "weight": {
+                "default": 100,
+                "description": "Determines the order in which the action appears in menu or list.",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "name",
+              "location",
+              "key",
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "adminPage": {
+          "additionalProperties": true,
+          "description": "The ability to be user configurable via an admin page in the menu",
+          "properties": {
+            "url": {
+              "description": "The URL to embed into a configure dialog via an iframe",
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "type": "object"
+        },
+        "configurable": {
+          "additionalProperties": true,
+          "description": "The ability to be user configurable via a configure dialog",
+          "properties": {
+            "allowAccessToRoomAdmins": {
+              "default": false,
+              "description": "If the add-on is installed globally, this property can allow the\nconfiguration page to be accessed in the room administration pages\nmaking it possible to have room specific configuration for the global\nadd-on. This is only valid for globally installed add-ons.",
+              "type": "boolean"
+            },
+            "authentication": {
+              "default": "jwt",
+              "description": "The authentication method for this configure page",
+              "enum": [
+                "jwt",
+                "none"
+              ],
+              "type": "string"
+            },
+            "url": {
+              "description": "The URL to embed into a configure dialog via an iframe",
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "type": "object"
+        },
+        "dialog": {
+          "description": "The ability to open dialogs in the web client",
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "authentication": {
+                "default": "jwt",
+                "description": "The authentication method for this dialog",
+                "enum": [
+                  "jwt",
+                  "none"
+                ],
+                "type": "string"
+              },
+              "key": {
+                "description": "Unique key (in the context of the integration) to identify this dialog.",
+                "maxLength": 40,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9_\\-\\.]+$",
+                "type": "string"
+              },
+              "options": {
+                "additionalProperties": false,
+                "description": "Dialog options",
+                "properties": {
+                  "filter": {
+                    "additionalProperties": true,
+                    "description": "If present, adds a filter box in the dialog header",
+                    "properties": {
+                      "placeholder": {
+                        "additionalProperties": false,
+                        "description": "The placeholder text for the filter box.",
+                        "properties": {
+                          "i18n": {
+                            "description": "The optional localization key, used to look up the localized value.",
+                            "maxLength": 40,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "value": {
+                            "description": "The default text.",
+                            "maxLength": 100,
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "value"
+                        ],
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "hint": {
+                    "additionalProperties": false,
+                    "description": "The dialog hint, displayed in the left side of the bottom bar",
+                    "properties": {
+                      "i18n": {
+                        "description": "The optional localization key, used to look up the localized value.",
+                        "maxLength": 40,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "value": {
+                        "description": "The default text.",
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ],
+                    "type": "object"
+                  },
+                  "primaryAction": {
+                    "additionalProperties": true,
+                    "description": "The primary action of the dialog, rendered as a primary button.",
+                    "properties": {
+                      "enabled": {
+                        "description": "Whether button is disabled or enabled (default 'true')",
+                        "type": "boolean"
+                      },
+                      "key": {
+                        "description": "A key that can be used to register an event listener. Default 'primary-action-selected'\nfor the primary action, none for secondary actions",
+                        "type": "string"
+                      },
+                      "name": {
+                        "additionalProperties": false,
+                        "description": "The localizable name of the button",
+                        "properties": {
+                          "i18n": {
+                            "description": "The optional localization key, used to look up the localized value.",
+                            "maxLength": 40,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "value": {
+                            "description": "The default text.",
+                            "maxLength": 100,
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "value"
+                        ],
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "secondaryActions": {
+                    "description": "The secondary actions of the dialog, rendered as link buttons.",
+                    "items": {
+                      "additionalProperties": true,
+                      "properties": {
+                        "enabled": {
+                          "description": "Whether button is disabled or enabled (default 'true')",
+                          "type": "boolean"
+                        },
+                        "key": {
+                          "description": "A key that can be used to register an event listener. Default 'primary-action-selected'\nfor the primary action, none for secondary actions",
+                          "type": "string"
+                        },
+                        "name": {
+                          "additionalProperties": false,
+                          "description": "The localizable name of the button",
+                          "properties": {
+                            "i18n": {
+                              "description": "The optional localization key, used to look up the localized value.",
+                              "maxLength": 40,
+                              "minLength": 1,
+                              "type": "string"
+                            },
+                            "value": {
+                              "description": "The default text.",
+                              "maxLength": 100,
+                              "minLength": 1,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value"
+                          ],
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "type": "object"
+                    },
+                    "minLength": 1,
+                    "type": "array"
+                  },
+                  "size": {
+                    "description": "The size of the dialog",
+                    "type": [
+                      {
+                        "additionalProperties": true,
+                        "description": "A custom dialog size.\nadjusted to fit the contents",
+                        "properties": {
+                          "height": {
+                            "description": "The height of the dialog, either in pixels ('px') or as a percentage ('%').",
+                            "type": "string"
+                          },
+                          "width": {
+                            "description": "The width of the dialog, either in pixels ('px') or as a percentage ('%').",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "width",
+                          "height"
+                        ],
+                        "type": "object"
+                      },
+                      {
+                        "description": "ADG default sizes",
+                        "enum": [
+                          "small",
+                          "medium",
+                          "large",
+                          "xlarge"
+                        ],
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "style": {
+                    "description": "The dialog style (default is 'normal')",
+                    "enum": [
+                      "normal",
+                      "warning"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "title": {
+                "additionalProperties": false,
+                "description": "The dialog title",
+                "properties": {
+                  "i18n": {
+                    "description": "The optional localization key, used to look up the localized value.",
+                    "maxLength": 40,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "The default text.",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "value"
+                ],
+                "type": "object"
+              },
+              "url": {
+                "description": "The url where the dialog content is hosted.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "key",
+              "title"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "externalPage": {
+          "description": "The ability to specify an external web page that can be targeted by an action",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "description": "Unique key (in the context of the integration) to identify this external page.",
+                "maxLength": 40,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9_\\-\\.]+$",
+                "type": "string"
+              },
+              "name": {
+                "additionalProperties": false,
+                "description": "The display name of the external page.",
+                "properties": {
+                  "i18n": {
+                    "description": "The optional localization key, used to look up the localized value.",
+                    "maxLength": 40,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "The default text.",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "value"
+                ],
+                "type": "object"
+              },
+              "url": {
+                "description": "The URL of the external page.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "key"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "glance": {
+          "description": "The ability to add a glance to the HipChat sidebar",
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "conditions": {
+                "description": "Conditions determine whether this glance is shown",
+                "items": {
+                  "type": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "condition": {
+                          "description": "The identifier of a built-in condition.",
+                          "enum": [
+                            "room_is_public",
+                            "user_is_admin",
+                            "user_is_guest",
+                            "user_is_room_owner",
+                            "glance_matches"
+                          ],
+                          "type": "string"
+                        },
+                        "invert": {
+                          "description": "A flag indicating whether to invert the boolean result of the condition.",
+                          "type": "boolean"
+                        },
+                        "params": {
+                          "additionalProperties": true,
+                          "description": "A map of key/value parameters for a built-in condition.",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "condition"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "conditions": {
+                          "description": "The conditions to compose using the specific logical operator.",
+                          "items": {
+                            "type": [
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "condition": {
+                                    "description": "The identifier of a built-in condition.",
+                                    "enum": [
+                                      "room_is_public",
+                                      "user_is_admin",
+                                      "user_is_guest",
+                                      "user_is_room_owner",
+                                      "glance_matches"
+                                    ],
+                                    "type": "string"
+                                  },
+                                  "invert": {
+                                    "description": "A flag indicating whether to invert the boolean result of the condition.",
+                                    "type": "boolean"
+                                  },
+                                  "params": {
+                                    "additionalProperties": true,
+                                    "description": "A map of key/value parameters for a built-in condition.",
+                                    "type": "object"
+                                  }
+                                },
+                                "required": [
+                                  "condition"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "conditions": {
+                                    "description": "The conditions to compose using the specific logical operator.",
+                                    "items": {
+                                      "type": [
+                                        {
+                                          "additionalProperties": false,
+                                          "properties": {
+                                            "condition": {
+                                              "description": "The identifier of a built-in condition.",
+                                              "enum": [
+                                                "room_is_public",
+                                                "user_is_admin",
+                                                "user_is_guest",
+                                                "user_is_room_owner",
+                                                "glance_matches"
+                                              ],
+                                              "type": "string"
+                                            },
+                                            "invert": {
+                                              "description": "A flag indicating whether to invert the boolean result of the condition.",
+                                              "type": "boolean"
+                                            },
+                                            "params": {
+                                              "additionalProperties": true,
+                                              "description": "A map of key/value parameters for a built-in condition.",
+                                              "type": "object"
+                                            }
+                                          },
+                                          "required": [
+                                            "condition"
+                                          ],
+                                          "type": "object"
+                                        }
+                                      ]
+                                    },
+                                    "minLength": 1,
+                                    "type": "array"
+                                  },
+                                  "type": {
+                                    "description": "Defines what logical operator is used to evaluate the list of conditions.",
+                                    "enum": [
+                                      "and",
+                                      "or",
+                                      "AND",
+                                      "OR"
+                                    ],
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "conditions"
+                                ],
+                                "type": "object"
+                              }
+                            ]
+                          },
+                          "minLength": 1,
+                          "type": "array"
+                        },
+                        "type": {
+                          "description": "Defines what logical operator is used to evaluate the list of conditions.",
+                          "enum": [
+                            "and",
+                            "or",
+                            "AND",
+                            "OR"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "conditions"
+                      ],
+                      "type": "object"
+                    }
+                  ]
+                },
+                "minLength": 1,
+                "type": "array"
+              },
+              "icon": {
+                "additionalProperties": true,
+                "description": "Icon to display on the left side of the glance.",
+                "properties": {
+                  "url": {
+                    "description": "Url for the icon.",
+                    "type": "string"
+                  },
+                  "url@2x": {
+                    "description": "Url for the retina version of the icon.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "url",
+                  "url@2x"
+                ],
+                "type": "object"
+              },
+              "key": {
+                "description": "Unique key (in the context of the integration) to identify this glance.",
+                "maxLength": 40,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9_\\-\\.]+$",
+                "type": "string"
+              },
+              "name": {
+                "additionalProperties": false,
+                "description": "The display name of the glance.",
+                "properties": {
+                  "i18n": {
+                    "description": "The optional localization key, used to look up the localized value.",
+                    "maxLength": 40,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "The default text.",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "value"
+                ],
+                "type": "object"
+              },
+              "queryUrl": {
+                "description": "The URL of the resource providing the glance content.",
+                "type": "string"
+              },
+              "target": {
+                "description": "Defines the behaviour when clicking on the glance.",
+                "type": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "additionalProperties": true,
+                    "properties": {
+                      "key": {
+                        "description": "The key of a dialog, glance or web panel that should be opened in response to this action.",
+                        "maxLength": 40,
+                        "minLength": 1,
+                        "pattern": "^[a-zA-Z0-9_\\-\\.]+$",
+                        "type": "string"
+                      },
+                      "options": {
+                        "additionalProperties": true,
+                        "description": "An object containing options which vary based on the type of target.",
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "key"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              },
+              "weight": {
+                "default": 100,
+                "description": "Determines the order in which glances appear.\nGlances are displayed top to bottom in order of ascending weight.",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "name",
+              "key",
+              "icon"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "hipchatApiConsumer": {
+          "additionalProperties": true,
+          "description": "The ability to consume the HipChat API",
+          "properties": {
+            "avatar": {
+              "description": "An image used by the HipChat client when showing messages from this addon",
+              "type": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": true,
+                  "properties": {
+                    "url": {
+                      "description": "The url where the icon is",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "url@2x": {
+                      "description": "The url for the icon to be used on high dpi screens.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "url"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "fromName": {
+              "description": "The name that messages should be from when sent from the integration itself.",
+              "type": "string"
+            },
+            "scopes": {
+              "description": "An array of scopes that are required to consume the HipChat API",
+              "items": {
+                "enum": [
+                  "send_notification",
+                  "send_message",
+                  "view_room",
+                  "admin_room",
+                  "view_group",
+                  "admin_group",
+                  "manage_rooms",
+                  "view_messages",
+                  "import_data"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "scopes"
+          ],
+          "type": "object"
+        },
+        "installable": {
+          "additionalProperties": true,
+          "description": "The capability of receiving a synchronous installation callback during integration installation.",
+          "properties": {
+            "allowGlobal": {
+              "default": true,
+              "description": "Whether the integration can be installed globally or not",
+              "type": "boolean"
+            },
+            "allowRoom": {
+              "default": true,
+              "description": "Whether the integration can be installed in a room or not",
+              "type": "boolean"
+            },
+            "callbackUrl": {
+              "description": "The URL to receive a confirmation of an integration installation.  The message will be an HTTP POST\nwith the following fields in a JSON-encoded body: 'capabilitiesUrl', 'oauthId', 'oauthSecret',\nand optionally 'roomId'. The installation of the integration will only succeed if the POST response\nis a 200.",
+              "type": "string"
+            },
+            "installedUrl": {
+              "description": "The URL to redirect the browser to after the integration has been installed.  The redirected URL\nwill also contain the query parameters 'redirect_url' and 'installable_url' for the integration\nconfiguration page and REST resource for installable information, respectively.",
+              "type": "string"
+            },
+            "uninstalledUrl": {
+              "description": "The URL to redirect the browser to after the integration has been uninstalled.  The redirected URL\nwill also contain the query parameters 'redirect_url' and 'installable_url' for the integration\nmanagement page and REST resource for installable information, respectively.",
+              "type": "string"
+            },
+            "updateCallbackUrl": {
+              "description": "The URL to receive a confirmation of an add-on update. The message will be an HTTP POST\nwith the following fields in a JSON-encoded body: 'capabilitiesUrl', 'oauthId',\nand optionally 'roomId'.",
+              "type": "string"
+            },
+            "updatedUrl": {
+              "description": "The URL to redirect the browser to after the add-on has been updated.  The redirected URL will\nalso contain the query parameters 'redirect_url' and 'installable_url' for the add-on\nmanagement page and REST resource for installable information, respectively.",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "oauth2Consumer": {
+          "additionalProperties": true,
+          "description": "The capability of using OAuth 2 to authenticate to a remote application",
+          "properties": {
+            "redirectionUrls": {
+              "description": "An array of URLs to allow for redirection after the remote system has generated an\nauthorization code",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "redirectionUrls"
+          ],
+          "type": "object"
+        },
+        "oauth2Provider": {
+          "additionalProperties": true,
+          "description": "The capability of providing and accepting OAuth 2 tokens for authentication",
+          "properties": {
+            "authorizationUrl": {
+              "description": "The OAuth 2 endpoint to direct browsers to in order to receive an authorization code that\ncan be later exchanged using the token URL for an access token",
+              "type": "string"
+            },
+            "tokenUrl": {
+              "description": "The OAuth 2 token endpoint for retrieving an access token",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "webPanel": {
+          "description": "The ability to add a UI panel to the HipChat client UI",
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "authentication": {
+                "default": "jwt",
+                "description": "The authentication method for this webpanel",
+                "enum": [
+                  "jwt",
+                  "none"
+                ],
+                "type": "string"
+              },
+              "conditions": {
+                "description": "Conditions determine whether this web panel is shown",
+                "items": {
+                  "type": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "condition": {
+                          "description": "The identifier of a built-in condition.",
+                          "enum": [
+                            "room_is_public",
+                            "user_is_admin",
+                            "user_is_guest",
+                            "user_is_room_owner"
+                          ],
+                          "type": "string"
+                        },
+                        "invert": {
+                          "description": "A flag indicating whether to invert the boolean result of the condition.",
+                          "type": "boolean"
+                        },
+                        "params": {
+                          "additionalProperties": true,
+                          "description": "A map of key/value parameters for a built-in condition.",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "condition"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "conditions": {
+                          "description": "The conditions to compose using the specific logical operator.",
+                          "items": {
+                            "type": [
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "condition": {
+                                    "description": "The identifier of a built-in condition.",
+                                    "enum": [
+                                      "room_is_public",
+                                      "user_is_admin",
+                                      "user_is_guest",
+                                      "user_is_room_owner"
+                                    ],
+                                    "type": "string"
+                                  },
+                                  "invert": {
+                                    "description": "A flag indicating whether to invert the boolean result of the condition.",
+                                    "type": "boolean"
+                                  },
+                                  "params": {
+                                    "additionalProperties": true,
+                                    "description": "A map of key/value parameters for a built-in condition.",
+                                    "type": "object"
+                                  }
+                                },
+                                "required": [
+                                  "condition"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "conditions": {
+                                    "description": "The conditions to compose using the specific logical operator.",
+                                    "items": {
+                                      "type": [
+                                        {
+                                          "additionalProperties": false,
+                                          "properties": {
+                                            "condition": {
+                                              "description": "The identifier of a built-in condition.",
+                                              "enum": [
+                                                "room_is_public",
+                                                "user_is_admin",
+                                                "user_is_guest",
+                                                "user_is_room_owner"
+                                              ],
+                                              "type": "string"
+                                            },
+                                            "invert": {
+                                              "description": "A flag indicating whether to invert the boolean result of the condition.",
+                                              "type": "boolean"
+                                            },
+                                            "params": {
+                                              "additionalProperties": true,
+                                              "description": "A map of key/value parameters for a built-in condition.",
+                                              "type": "object"
+                                            }
+                                          },
+                                          "required": [
+                                            "condition"
+                                          ],
+                                          "type": "object"
+                                        }
+                                      ]
+                                    },
+                                    "minLength": 1,
+                                    "type": "array"
+                                  },
+                                  "type": {
+                                    "description": "Defines what logical operator is used to evaluate the list of conditions.",
+                                    "enum": [
+                                      "and",
+                                      "or",
+                                      "AND",
+                                      "OR"
+                                    ],
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "conditions"
+                                ],
+                                "type": "object"
+                              }
+                            ]
+                          },
+                          "minLength": 1,
+                          "type": "array"
+                        },
+                        "type": {
+                          "description": "Defines what logical operator is used to evaluate the list of conditions.",
+                          "enum": [
+                            "and",
+                            "or",
+                            "AND",
+                            "OR"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "conditions"
+                      ],
+                      "type": "object"
+                    }
+                  ]
+                },
+                "minLength": 1,
+                "type": "array"
+              },
+              "icon": {
+                "additionalProperties": true,
+                "description": "Icon to display on the left side of the webPanel title.",
+                "properties": {
+                  "url": {
+                    "description": "Url for the icon.",
+                    "type": "string"
+                  },
+                  "url@2x": {
+                    "description": "Url for the retina version of the icon.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "url",
+                  "url@2x"
+                ],
+                "type": "object"
+              },
+              "key": {
+                "description": "Unique key (in the context of the integration) to identify this webPanel.",
+                "maxLength": 40,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9_\\-\\.]+$",
+                "type": "string"
+              },
+              "location": {
+                "description": "The location of this webPanel",
+                "enum": [
+                  "hipchat.sidebar.right"
+                ],
+                "type": "string"
+              },
+              "name": {
+                "additionalProperties": false,
+                "description": "The display name of the webPanel.",
+                "properties": {
+                  "i18n": {
+                    "description": "The optional localization key, used to look up the localized value.",
+                    "maxLength": 40,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "The default text.",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "value"
+                ],
+                "type": "object"
+              },
+              "url": {
+                "description": "The URL of the resource providing the view content.",
+                "type": "string"
+              },
+              "weight": {
+                "default": 100,
+                "description": "Determines the order in which webPanel appear.\nWeb panels are displayed top to bottom or left to right in order of ascending weight.",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "name",
+              "url",
+              "location",
+              "key"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "webhook": {
+          "description": "The ability to receive HTTP POST requests on certain events",
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "authentication": {
+                "default": "none",
+                "description": "The authentication method for this webhook",
+                "enum": [
+                  "jwt",
+                  "none"
+                ],
+                "type": "string"
+              },
+              "event": {
+                "description": "The event to listen for",
+                "enum": [
+                  "room_archived",
+                  "room_created",
+                  "room_deleted",
+                  "room_enter",
+                  "room_exit",
+                  "room_file_upload",
+                  "room_message",
+                  "room_notification",
+                  "room_topic_change",
+                  "room_unarchived"
+                ],
+                "type": "string"
+              },
+              "key": {
+                "description": "Unique key (in the context of the integration) to identify this webhook.",
+                "maxLength": 40,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9_\\-\\.]+$",
+                "type": "string"
+              },
+              "name": {
+                "description": "The label for this webhook",
+                "type": "string"
+              },
+              "pattern": {
+                "description": "The regular expression pattern to match against messages.  Only applicable for message events.",
+                "type": "string"
+              },
+              "url": {
+                "description": "The URL to send the webhook POST to",
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "event"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "description": {
+      "description": "A short description of this application",
+      "type": "string"
+    },
+    "key": {
+      "description": "The marketplace integration key that uniquely identifies the application, if registered",
+      "type": "string"
+    },
+    "links": {
+      "additionalProperties": true,
+      "description": "URLs to retrieve this and related integration information",
+      "properties": {
+        "homepage": {
+          "description": "The URL to human-viewable home page of this integration",
+          "type": "string"
+        },
+        "self": {
+          "description": "The URL to this descriptor.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "self"
+      ],
+      "type": "object"
+    },
+    "name": {
+      "description": "The display name of this application",
+      "type": "string"
+    },
+    "vendor": {
+      "additionalProperties": false,
+      "description": "The vendor that maintains this application",
+      "properties": {
+        "name": {
+          "description": "The vendor display name",
+          "type": "string"
+        },
+        "url": {
+          "description": "The vendor's home page URL",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "name"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "name",
+    "links",
+    "key",
+    "description"
+  ],
+  "type": "object"
+}
