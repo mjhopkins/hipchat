@@ -23,7 +23,8 @@ import           HipChat.Util        (ToFromJSON)
 
 import           Control.Lens.AsText (AsText, dec, enc)
 import qualified Control.Lens.AsText as AsText
-import           Control.Lens.TH     (makeFields)
+import           Control.Lens.TH     (camelCaseFields, makeFields,
+                                      makeLensesWith)
 import           Data.Aeson          (FromJSON, ToJSON, parseJSON, toJSON)
 import           Data.Default        (Default, def)
 import           Data.Ix             (Ix)
@@ -367,8 +368,8 @@ data RoomExitItem       = RoomExitItem
 data RoomFileUploadItem = RoomFileUploadItem
 
 data RoomMessageItem = RoomMessageItem
-  { roomMesssageItemMessage :: Message 'RoomMessage
-  , roomMesssageItemRoom    :: Room
+  { roomMessageItemMessage :: Message 'RoomMessage
+  , roomMessageItemRoom    :: Room
   } deriving (Show, Eq, Generic)
 
 instance ToFromJSON RoomMessageItem
@@ -399,7 +400,7 @@ data RoomNotificationResp = RoomNotificationResp
   { roomNotificationEvent         :: Text
   , roomNotificationWebhookId     :: Int
   , roomNotificationItem          :: RoomNotificationItem
-  , roomNotificationOauthClientId :: Maybe UUID -- make newtype wrapper
+  , roomNotificationOauthClientId :: Maybe UUID -- TODO make newtype wrapper
   } deriving (Show, Eq, Generic)
 
 instance ToFromJSON RoomNotificationResp
@@ -407,6 +408,37 @@ instance ToFromJSON RoomNotificationResp
 makeFields ''RoomNotificationItem
 makeFields ''RoomNotificationResp
 
+--------------------------------------------------------------------------------
+-- RoomMessageResp
+--------------------------------------------------------------------------------
+
+data RoomMessageResp = RoomMessageResp
+  { roomMessageEvent         :: Text
+  , roomMessageWebhookId     :: Int
+  , roomMessageItem          :: RoomMessageItem
+  , roomMessageOauthClientId :: Maybe UUID -- TODO make newtype wrapper
+  } deriving (Show, Eq, Generic)
+
+instance ToFromJSON RoomMessageResp
+
+makeLensesWith camelCaseFields ''RoomMessageItem
+makeLensesWith camelCaseFields ''RoomMessageResp
+
+--------------------------------------------------------------------------------
+-- WebhookResp
+--
+--------------------------------------------------------------------------------
+
+-- TODO
+data WebhookResp (e :: RoomEvent) = WebhookResp
+  { webhookRespEvent  :: Text
+  , webhookRespItem   :: Item e
+  , webhookRespSender :: Sender e
+  }
+
+-- instance ToFromJSON (WebhookResp RoomMessage)
+
+-- makeFields (''WebhookResp 'RoomMessage)
 {-
 "\\"{\
     \\"event\\": \\"room_message\\",\
