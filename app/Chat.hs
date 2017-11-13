@@ -184,8 +184,8 @@ data AppError
 
 type HipChat = ReaderT Conf (ExceptT AppError IO)
 
-hipChatToServant :: IO Conf -> HipChat :~> ExceptT ServantErr IO
-hipChatToServant conf = Nat $ \hipchat -> do
+hipChatToServant :: IO Conf -> HipChat :~> Servant.Handler
+hipChatToServant conf = NT $ \hipchat -> do
   c <- liftIO conf
   r <- liftIO . runExceptT . flip runReaderT c $ hipchat
   either handleErr return r
@@ -477,7 +477,9 @@ capabilitiesDescriptor baseUrl = return AddOn
  }
 
 mainServer :: ChatInteraction -> URL -> Server FullApi
-mainServer chat baseUrl = enter (hipChatToServant conf) (hipChatServer baseUrl) :<|> serveDirectory "public-www"
+mainServer chat baseUrl =
+       enter (hipChatToServant conf) (hipChatServer baseUrl)
+  :<|> serveDirectoryFileServer "public-www"
  where
     conf :: IO Conf
     conf = Conf <$> newIORef Map.empty <*> newMVar chat
