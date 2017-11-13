@@ -53,6 +53,7 @@ import           Data.Attoparsec.ByteString
 import           Data.ByteString                      (ByteString)
 import qualified Data.ByteString                      as BS
 import qualified Data.ByteString.Base64               as Base64 (encode)
+import qualified Data.ByteString.Lazy.Char8           as LBS
 import           Data.Default
 import           Data.Foldable
 import           Data.IORef
@@ -186,8 +187,11 @@ type HipChat = ReaderT Conf (ExceptT AppError IO)
 hipChatToServant :: IO Conf -> HipChat :~> ExceptT ServantErr IO
 hipChatToServant conf = Nat $ \hipchat -> do
   c <- liftIO conf
-  lift . fmap (either (error . show) id) . runExceptT . flip runReaderT c $ hipchat
-  --TODO better error handling
+  r <- liftIO . runExceptT . flip runReaderT c $ hipchat
+  either handleErr return r
+   where
+     handleErr e = let err = "Hipchat integration error: " <> LBS.pack (show e)
+                   in throwError $ err500 { errBody = err }
 
 --------------------------------------------------------------------------------
 -- API definitions
