@@ -56,8 +56,10 @@ library
                      , http-types
                      , lens
                      , network-uri
+                     , regex-pcre
                      , servant
                      , servant-client
+                     , template-haskell
                      , text
                      , time
                      , utf8-string

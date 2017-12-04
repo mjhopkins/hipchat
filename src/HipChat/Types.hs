@@ -22,6 +22,7 @@ module HipChat.Types
   , name
   , url
   , Key(..)
+  , keyQQ
   , OAuth2Provider(..)
   , authorizationUrl
   , tokenUrl

@@ -4,6 +4,7 @@
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE MultiParamTypeClasses  #-}
 {-# LANGUAGE OverloadedStrings      #-}
+{-# LANGUAGE QuasiQuotes            #-}
 {-# LANGUAGE RankNTypes             #-}
 {-# LANGUAGE ScopedTypeVariables    #-}
 {-# LANGUAGE TemplateHaskell        #-}
@@ -433,7 +434,7 @@ handleWebhookAsRawText name s = do
 
 capabilitiesDescriptor :: Monad m => URL -> m AddOn
 capabilitiesDescriptor baseUrl = return AddOn
-  { addOnKey          = "votnik"
+  { addOnKey          = [keyQQ|votnik|]
   , addOnName         = "Votnik add-on for HipChat"
   , addOnDescription  = "This add on allows the user to interact with A&I alerting and monitoring"
   , addOnLinks        = mkLinks $ baseUrl / "capabilities"
@@ -463,8 +464,22 @@ capabilitiesDescriptor baseUrl = return AddOn
           }
     , capabilitiesOauth2Provider     = Nothing
     , capabilitiesWebhook            =
-        [ Webhook (baseUrl / "room_message"     ) RoomMessage      (Just "/hey") (Just "Room message webhook") (Just "Room message webhook") Nothing
-        , Webhook (baseUrl / "room_notification") RoomNotification (Just "/hey") (Just "Room notification webhook") (Just "Room notification webhook") Nothing
+        [ Webhook
+            { webhookUrl            = baseUrl / "room_message"
+            , webhookEvent          = RoomMessage
+            , webhookPattern        = Just "/hey"
+            , webhookKey            = Just [keyQQ|Room_message_webhook|]
+            , webhookName           = Just "Room message webhook"
+            , webhookAuthentication = Nothing
+            }
+        , Webhook
+            { webhookUrl            = baseUrl / "room_notification"
+            , webhookEvent          = RoomNotification
+            , webhookPattern        = Just "/hey"
+            , webhookKey            = Just [keyQQ|Room_notification_webhook|]
+            , webhookName           = Just "Room notification webhook"
+            , webhookAuthentication = Nothing
+            }
         ]
     , capabilitiesConfigurable       = Nothing
     , capabilitiesDialog             = []
