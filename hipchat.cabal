@@ -104,12 +104,47 @@ executable chat
                      , wai
                      , wai-extra
                      , warp
-                    --  , HipChat
-                    --  , HipChat.Auth
-                    --  , HipChat.Types
-                    --  , HipChat.API.Rooms
-                    --  , HipChat.AddOn.Capabilities
-                    --  , HipChat.AddOn.Types
+  default-language:    Haskell2010
+  ghc-options:         -Wall
+
+executable simple-chat
+  hs-source-dirs:      app
+  main-is:             SimpleChat.hs
+  other-modules:       Util.JsonRequestLogger
+  build-depends:       base >= 4.7 && < 5
+                     , aeson
+                     , aeson-pretty
+                     , async
+                     , attoparsec
+                     , base64-bytestring
+                     , blaze-builder
+                     , bytestring
+                     , case-insensitive
+                     , containers
+                     , data-default
+                     , exceptions
+                     , fast-logger
+                     , hipchat
+                     , http-client
+                     , http-client-tls
+                     , http-media
+                     , http-types
+                     , iproute
+                     , lens
+                     , lifted-base
+                     , machines
+                     , monad-control
+                     , mtl
+                     , network
+                     , servant
+                     , servant-client
+                     , servant-server
+                     , string-conversions
+                     , text
+                     , time
+                     , wai
+                     , wai-extra
+                     , warp
   default-language:    Haskell2010
   ghc-options:         -Wall
 
