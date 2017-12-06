@@ -199,7 +199,7 @@ type HipChatAddOnApi =
        Get '[JSON] AddOn
   :<|> "capabilities"      :> Get '[JSON] AddOn
   :<|> "installed"         :> ReqBody '[JSON] Registration :> Post '[JSON] ()
-  :<|> "room_message"      :> ReqBody '[JSON] Value :> Post '[JSON] ()
+  :<|> "room_message"      :> ReqBody '[JSON] RoomMessageResp :> Post '[JSON] ()
   :<|> "room_notification" :> ReqBody '[JSON] RoomNotificationResp :> Post '[JSON] ()
 
 type FullApi = HipChatAddOnApi :<|> "static" :> Raw
@@ -213,7 +213,7 @@ hipChatServer baseUrl =
        capabilitiesDescriptor baseUrl -- TODO redirect
   :<|> capabilitiesDescriptor baseUrl
   :<|> handleInstallation
-  :<|> handleWebhookAsRawText "room_message"
+  :<|> handleRoomMessage
   :<|> handleRoomNotification
 
 handleInstallation :: (MonadIO m, MonadError AppError m, MonadReader Conf m) => Registration -> m ()
