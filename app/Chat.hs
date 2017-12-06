@@ -388,8 +388,8 @@ handleRoomMessage m = do
   chatMVar <- view chatInteraction
   let
     -- TODO lenses
-    message = roomMessageItemMessage . roomMessageItem $ m
-    room    = roomMessageItemRoom . roomMessageItem $ m
+    message = roomMessageItemMessage . roomMessageRespItem $ m
+    room    = roomMessageItemRoom . roomMessageRespItem $ m
     sender  = messageFrom message
     user    = getSenderName sender
     msg     = messageMessage message

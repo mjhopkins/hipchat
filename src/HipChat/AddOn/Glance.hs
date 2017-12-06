@@ -23,14 +23,14 @@ module HipChat.AddOn.Glance where
 
 import           HipChat.AddOn.Types (Icon, Name)
 import           HipChat.Types       (Key, URL)
-import           HipChat.Util        (ToFromJSON, opts, standardAesonOpts)
+import           HipChat.Util        (ToFromJSON, unwrappedUnaryRecords,
+                                      variant)
 
 import           Control.Lens.AsText (AsText, dec, enc)
 import qualified Control.Lens.AsText as AsText
 import           Control.Lens.TH     (camelCaseFields, makeLensesWith)
 import           Data.Aeson          (FromJSON, Object, ToJSON, parseJSON,
                                       toJSON)
-import           Data.Aeson.Types
 import           Data.String         (IsString, fromString)
 import           GHC.Generics
 
@@ -54,8 +54,7 @@ data GlanceTarget
     deriving (Show, Eq, Generic)
 
 instance ToFromJSON GlanceTarget where
-  opts p = o { sumEncoding = UntaggedValue, unwrapUnaryRecords = True }
-      where o = standardAesonOpts p
+  variant = unwrappedUnaryRecords
 
 --------------------------------------------------------------------------------
 -- GlanceCondition
@@ -132,8 +131,7 @@ data GlanceCondition
     deriving (Eq, Show, Generic)
 
 instance ToFromJSON GlanceCondition where
-  opts p = o { sumEncoding = UntaggedValue, unwrapUnaryRecords = True }
-      where o = standardAesonOpts p
+  variant = unwrappedUnaryRecords
 
 --------------------------------------------------------------------------------
 -- Glance

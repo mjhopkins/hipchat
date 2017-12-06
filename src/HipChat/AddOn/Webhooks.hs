@@ -20,7 +20,7 @@ module HipChat.AddOn.Webhooks where
 
 import           HipChat.AddOn.Types (RoomEvent (..))
 import           HipChat.Types       (URL)
-import           HipChat.Util        (ToFromJSON)
+import           HipChat.Util        (ToFromJSON, variant, snakeCase)
 
 import           Control.Lens.AsText (AsText, dec, enc)
 import qualified Control.Lens.AsText as AsText
@@ -40,7 +40,9 @@ type Date = UTCTime
 newtype UUID = UUID Text
   deriving (Show, Eq, Generic)
 
-instance ToFromJSON UUID
+instance ToFromJSON UUID where
+  variant = snakeCase
+
 
 --------------------------------------------------------------------------------
 -- UserLinks
@@ -51,7 +53,8 @@ newtype UserLinks = UserLinks
   -- ^ The link to use to retrieve the user information
   } deriving (Show, Eq, Generic)
 
-instance ToFromJSON UserLinks
+instance ToFromJSON UserLinks where
+  variant = snakeCase
 
 --------------------------------------------------------------------------------
 -- Mention
@@ -65,7 +68,8 @@ data MentionItem = MentionItem
   , mentionItemMentionLinks :: UserLinks
   } deriving (Show, Eq, Generic)
 
-instance ToFromJSON MentionItem
+instance ToFromJSON MentionItem where
+  variant = snakeCase
 
 makeFields ''MentionItem
 
@@ -86,7 +90,8 @@ data FileInfo = FileInfo
 
 makeFields ''FileInfo
 
-instance ToFromJSON FileInfo
+instance ToFromJSON FileInfo where
+  variant = snakeCase
 
 --------------------------------------------------------------------------------
 -- Sender
@@ -124,7 +129,8 @@ data instance Sender 'RoomMessage
     -- ^ An etag-like random version string
     } deriving (Show, Eq, Generic)
 
-instance ToFromJSON (Sender 'RoomMessage)
+instance ToFromJSON (Sender 'RoomMessage) where
+  variant = snakeCase
 
 data instance Sender 'RoomTopicChange
   = SimpleTopicChangeSender
@@ -165,7 +171,8 @@ data Image = Image
   , imageName  :: Text
   } deriving (Show, Eq, Generic)
 
-instance ToFromJSON Image
+instance ToFromJSON Image where
+  variant = snakeCase
 
 -- TODO
 data MessageLink = MessageLink
@@ -178,7 +185,8 @@ data MessageLink = MessageLink
   -- , messageLinkVideo         :: Maybe
   } deriving (Show, Eq, Generic)
 
-instance ToFromJSON MessageLink
+instance ToFromJSON MessageLink where
+  variant = snakeCase
 
 --------------------------------------------------------------------------------
 -- Message
@@ -232,7 +240,8 @@ data Color = Yellow | Green | Red | Purple | Gray
 
 instance Default Color where def = Yellow
 
-instance ToFromJSON Color
+instance ToFromJSON Color where
+  variant = snakeCase
 
 data family Message (e :: RoomEvent)
 
@@ -259,7 +268,8 @@ data instance Message 'RoomMessage =
   -- ^ The type of message being returned.
   } deriving (Show, Eq, Generic)
 
-instance ToFromJSON (Message 'RoomMessage)
+instance ToFromJSON (Message 'RoomMessage) where
+  variant = snakeCase
 
 data instance Message 'RoomNotification = NotificationMessage
   { notificationMessageColor         :: Maybe Color
@@ -280,7 +290,8 @@ data instance Message 'RoomNotification = NotificationMessage
   }
   deriving (Show, Eq, Generic)
 
-instance ToFromJSON (Message 'RoomNotification)
+instance ToFromJSON (Message 'RoomNotification) where
+  variant = snakeCase
 
 --------------------------------------------------------------------------------
 -- RoomLinks
@@ -299,7 +310,8 @@ data RoomLinks = RoomLinks
   -- ^ The URL to use to retrieve participants for this room.
   } deriving (Eq, Show, Generic)
 
-instance ToFromJSON RoomLinks
+instance ToFromJSON RoomLinks where
+  variant = snakeCase
 
 --------------------------------------------------------------------------------
 -- Room
@@ -309,7 +321,8 @@ instance ToFromJSON RoomLinks
 data Privacy = Private | Public
   deriving (Show, Eq, Ord, Bounded, Enum, Ix, Generic)
 
-instance ToFromJSON Privacy
+instance ToFromJSON Privacy where
+  variant = snakeCase
 
 data Room = Room
   { roomId         :: Int
@@ -326,7 +339,8 @@ data Room = Room
   -- ^ An etag-like random version string
   } deriving (Eq, Show, Generic)
 
-instance ToFromJSON Room
+instance ToFromJSON Room where
+  variant = snakeCase
 
 makeFields ''Room
 
@@ -373,14 +387,16 @@ data RoomMessageItem = RoomMessageItem
   , roomMessageItemRoom    :: Room
   } deriving (Show, Eq, Generic)
 
-instance ToFromJSON RoomMessageItem
+instance ToFromJSON RoomMessageItem where
+  variant = snakeCase
 
 data RoomNotificationItem = RoomNotificationItem
   { roomNotificationItemMessage :: Message 'RoomNotification
   , roomNotificationItemRoom    :: Room
   } deriving (Show, Eq, Generic)
 
-instance ToFromJSON RoomNotificationItem
+instance ToFromJSON RoomNotificationItem where
+  variant = snakeCase
 
 data RoomTopicChangeItem = RoomTopicChangeItem
   { roomTopicChangeItemRoom   :: Room
@@ -398,13 +414,14 @@ data RoomUnarchivedItem = RoomUnarchivedItem
 --------------------------------------------------------------------------------
 
 data RoomNotificationResp = RoomNotificationResp
-  { roomNotificationEvent         :: Text
-  , roomNotificationWebhookId     :: Int
-  , roomNotificationItem          :: RoomNotificationItem
-  , roomNotificationOauthClientId :: Maybe UUID -- TODO make newtype wrapper
+  { roomNotificationRespEvent         :: Text
+  , roomNotificationRespWebhookId     :: Int
+  , roomNotificationRespItem          :: RoomNotificationItem
+  , roomNotificationRespOauthClientId :: Maybe UUID -- TODO make newtype wrapper
   } deriving (Show, Eq, Generic)
 
-instance ToFromJSON RoomNotificationResp
+instance ToFromJSON RoomNotificationResp where
+  variant = snakeCase
 
 makeFields ''RoomNotificationItem
 makeFields ''RoomNotificationResp
@@ -414,13 +431,14 @@ makeFields ''RoomNotificationResp
 --------------------------------------------------------------------------------
 
 data RoomMessageResp = RoomMessageResp
-  { roomMessageEvent         :: Text
-  , roomMessageWebhookId     :: Int
-  , roomMessageItem          :: RoomMessageItem
-  , roomMessageOauthClientId :: Maybe UUID -- TODO make newtype wrapper
+  { roomMessageRespEvent         :: Text
+  , roomMessageRespWebhookId     :: Int
+  , roomMessageRespItem          :: RoomMessageItem
+  , roomMessageRespOauthClientId :: Maybe UUID -- TODO make newtype wrapper
   } deriving (Show, Eq, Generic)
 
-instance ToFromJSON RoomMessageResp
+instance ToFromJSON RoomMessageResp where
+  variant = snakeCase
 
 makeLensesWith camelCaseFields ''RoomMessageItem
 makeLensesWith camelCaseFields ''RoomMessageResp

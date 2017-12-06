@@ -1,50 +1,53 @@
+{-# LANGUAGE AllowAmbiguousTypes   #-}
 {-# LANGUAGE DefaultSignatures     #-}
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE TypeApplications      #-}
 {-# LANGUAGE UndecidableInstances  #-}
 {-# OPTIONS_GHC -fno-warn-orphans  #-}
 
 module HipChat.Util
-  ( genericToJSON'
-  , genericParseJSON'
-  , ToFromJSON
-  , opts
-  , standardAesonOpts
+  ( ToFromJSON
+  , variant
+  , camelCase
+  , snakeCase
+  , unwrappedUnaryRecords
   ) where
 
-import           Data.Aeson.Types (FromJSON, GFromJSON, GToJSON, Options,
-                                   Parser, ToJSON, Value, Zero, defaultOptions,
-                                   fieldLabelModifier, genericParseJSON,
-                                   genericToJSON, omitNothingFields, parseJSON,
-                                   toJSON)
-import           Data.Char        (toLower)
+import           Data.Aeson.Types (FromJSON, GFromJSON, GToJSON, Options (..),
+                                   Parser, SumEncoding (UntaggedValue), ToJSON,
+                                   Value, Zero, allNullaryToStringTag,
+                                   constructorTagModifier, fieldLabelModifier,
+                                   genericParseJSON, genericToJSON,
+                                   omitNothingFields, parseJSON, sumEncoding,
+                                   toJSON, unwrapUnaryRecords)
+import           Data.Char        (isLower, isUpper, toLower)
+import           Data.List        (intercalate)
 import           Data.Proxy       (Proxy (Proxy))
-import           Data.Typeable    (Typeable, typeRep)
+import           Data.Typeable    (Typeable, tyConName, typeRep, typeRepTyCon)
 
 import           GHC.Generics
 
-genericToJSON' :: forall a. (Typeable a, Generic a, GToJSON Zero (Rep a))
-               => a -> Value
-genericToJSON' = genericToJSON $ standardAesonOpts (Proxy :: Proxy a)
-
-genericParseJSON' :: forall a. (Typeable a, Generic a, GFromJSON Zero (Rep a))
-                  => Value -> Parser a
-genericParseJSON' = genericParseJSON $ standardAesonOpts (Proxy :: Proxy a)
-
 standardAesonOpts :: Typeable a => Proxy a -> Options
-standardAesonOpts p = defaultOptions
-  { fieldLabelModifier = uncapitalise . drop (numCharsInType p)
-  , omitNothingFields  = True
+standardAesonOpts p = Options
+  { fieldLabelModifier     = uncapitalise . drop (numCharsInType p)
+  , constructorTagModifier = uncapitalise
+  , allNullaryToStringTag  = True
+  , omitNothingFields      = True
+  , sumEncoding            = UntaggedValue
+  , unwrapUnaryRecords     = False
   }
 
-numCharsInType :: forall a. Typeable a => Proxy a -> Int
-numCharsInType = length . show . typeRep
+camelCase :: Options -> Options
+camelCase = id
 
-uncapitalise :: String -> String
-uncapitalise []      = []
-uncapitalise (h : t) = toLower h : t
+snakeCase :: Options -> Options
+snakeCase o = o { fieldLabelModifier = toSnakeCase . fieldLabelModifier o}
+
+unwrappedUnaryRecords :: Options -> Options
+unwrappedUnaryRecords o = o { unwrapUnaryRecords = True }
 
 class ToFromJSON a where
   toJSON' :: a -> Value
@@ -58,11 +61,32 @@ class ToFromJSON a where
   parseJSON' = genericParseJSON $ opts (Proxy :: Proxy a)
 
   opts :: Typeable a => Proxy a -> Options
-  opts = standardAesonOpts
+  opts = variant @ a . standardAesonOpts
 
+  variant :: Options -> Options
+  variant = camelCase
 
 instance {-# OVERLAPPABLE #-} ToFromJSON a => ToJSON a where
   toJSON = toJSON'
 
 instance {-# OVERLAPPABLE #-} ToFromJSON a => FromJSON a where
   parseJSON = parseJSON'
+
+numCharsInType :: forall a. Typeable a => Proxy a -> Int
+numCharsInType = length . tyConName . typeRepTyCon . typeRep
+
+uncapitalise :: String -> String
+uncapitalise []      = []
+uncapitalise (h : t) = toLower h : t
+
+toSnakeCase :: String -> String
+toSnakeCase = map toLower . intercalate "_" . camelComponents
+
+camelComponents :: String -> [String]
+camelComponents = go [] ""
+  where
+    go :: [String] -> String -> String -> [String]
+    go ws w (x:u:l:xs) | isUpper u && isLower l = go ((x:w):ws) [l, u] xs
+    go ws w (l:u:xs)   | isUpper u && isLower l = go ((l:w):ws) [u] xs
+    go ws w (x:xs)     = go ws (x:w) xs
+    go ws w ""         = reverse (map reverse (w:ws))
