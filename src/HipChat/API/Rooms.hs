@@ -19,7 +19,7 @@ import           Servant.API        ((:>), Capture, JSON, PlainText, Post,
                                      ReqBody)
 import           Servant.Client     (ClientM, client)
 type RoomsAPI =
-  TokenAuth :> "v2" :> Capture "room" Room :> "notification" :> ReqBody '[PlainText] Text :> Post '[JSON] ()
+  TokenAuth :> "v2" :> "room" :> Capture "room" Room :> "notification" :> ReqBody '[PlainText] Text :> Post '[JSON] ()
   -- ^ Send a message to a room. This resource accepts three different content-types:
   --
   --   * application/x-www-form-urlencoded - If you send as a form-encoded POST, the form fields will be mapped to their corresponding JSON properties.
