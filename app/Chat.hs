@@ -107,7 +107,6 @@ import           Servant.Utils.Enter
 import           System.IO
 import           System.Log.FastLogger
 
-
 --------------------------------------------------------------------------------
 -- ChatInteraction
 --------------------------------------------------------------------------------
@@ -185,14 +184,12 @@ data AppError
 
 type HipChat = ReaderT Conf (ExceptT AppError IO)
 
-hipChatToServant :: IO Conf -> HipChat :~> Servant.Handler
-hipChatToServant conf = NT $ \hipchat -> do
-  c <- liftIO conf
-  r <- liftIO . runExceptT . flip runReaderT c $ hipchat
-  either handleErr return r
+hipChatToServant :: Conf -> HipChat :~> Servant.Handler
+hipChatToServant conf = NT $ (>>= either handleErr return) . liftIO . runExceptT . flip runReaderT conf
    where
      handleErr e = let err = "Hipchat integration error: " <> LBS.pack (show e)
                    in throwError $ err500 { errBody = err }
+                   --TODO format error better
 
 --------------------------------------------------------------------------------
 -- API definitions
@@ -245,7 +242,7 @@ handleInstallation reg = do
             tok <- fmap (either (\e -> trace (show e) (error (show e))) id) . runExceptT . flip runReaderT conf $ getRoomToken man r
             putStrLn $ "Token is" <> show tok
             putStrLn "About to post to room"
-            fmap (either (\e -> trace (show e) (error (show e))) id) . runExceptT $ postMessageToRoom "Hello from Haskell" r tok man "https://api.hipchat.com/" -- TODO get from somewhere else
+            fmap (either (\e -> trace (show e) (error (show e))) id) . runExceptT $ postMessageToRoom "Hello from Haskell" r tok man "https://hipchat.ai.cba/" -- TODO get from somewhere else
             putStrLn "Posted to room"
             return tok
       void . liftIO $ forkIO (void action)
@@ -408,7 +405,8 @@ handleRoomMessage m = do
     . flip runReaderT conf
     $ getRoomToken man (room ^. Webhooks.id)
 
-  let hipchatURL = "https://api.hipchat.com/" -- WRONG fix
+  let hipchatURL = "https://hipchat.ai.cba/" -- TODO WRONG fix
+  -- let hipchatURL = "https://api.hipchat.com/" -- TODO WRONG fix
   -- the correct thing is to update `handleInstallation` to make a REST call to
   --   registration ^. capabilitiesUrl
   -- to retrieve the server's capabilities document.
@@ -450,7 +448,7 @@ capabilitiesDescriptor baseUrl = return AddOn
           , installableAllowGlobal       = False
           }
     , capabilitiesHipchatApiConsumer =
-        Just APIConsumer  -- Maybe APIConsumer
+        Just APIConsumer
           { apiConsumerScopes =
             [ SendNotification
             , SendMessage
@@ -491,34 +489,43 @@ capabilitiesDescriptor baseUrl = return AddOn
   , addOnApiVersion   = Nothing
  }
 
-mainServer :: ChatInteraction -> URL -> Server FullApi
-mainServer chat baseUrl =
+mainServer :: ChatInteraction -> URL -> Conf -> Server FullApi
+mainServer chat baseUrl conf =
        enter (hipChatToServant conf) (hipChatServer baseUrl)
   :<|> serveDirectoryFileServer "public-www"
- where
-    conf :: IO Conf
-    conf = Conf <$> newIORef Map.empty <*> newMVar chat
 
-app :: ChatInteraction -> URL -> Application
-app chat baseUrl = serve (Proxy :: Proxy FullApi) (mainServer chat baseUrl)
+app :: ChatInteraction -> URL -> Conf -> Application
+app chat baseUrl conf = serve (Proxy :: Proxy FullApi) $ mainServer chat baseUrl conf
 
 requestLogger :: IO Middleware
 requestLogger = mkRequestLogger $
   def { outputFormat = CustomOutputFormatWithDetails formatAsJSON }
 
--- baseUrl is our own URL exposed in the capabilities descriptor,
--- that HipChat will use to call us back for webhook notifications
+-- baseUrl is our own URL exposed in the capabilities descriptor;
+-- HipChat will use this to call us back for webhook notifications.
 run :: ChatInteraction -> URL -> Port -> IO ()
 run chat baseUrl localPort = do
   mw <- requestLogger
-  Warp.run localPort $ mw (app chat baseUrl)
+  putStrLn "Creating new conf"
+  conf <- Conf <$> newIORef Map.empty <*> newMVar chat
+  Warp.run localPort $ mw (app chat baseUrl conf)
 
 -- TODO load baseUrl and port from environment var
 main :: IO ()
-main = run testChat "http://127.0.0.1" 8000
+main = do
+  putStrLn $ "Running on port " ++ show port ++ " as " ++ show host
+  run echoChat host port
+  where
+    port = 8126
+    host = "http://hipchat-proxy-container.dev.monitoring.marathon.vanguard.services.nw.ai.cba"
 
-testChat :: ChatInteraction
-testChat = go 0 where
+
+
+
+
+
+echoChat :: ChatInteraction
+echoChat = go 0 where
   go :: Int -> ChatInteraction
   go n = MealyT $ \(user, msg) -> do
     putStrLn $ T.unpack $ "(" <> T.pack (show n) <> ") " <> user <> ": " <> msg
