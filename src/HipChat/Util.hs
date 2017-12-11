@@ -4,8 +4,10 @@
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE TemplateHaskell       #-}
 {-# LANGUAGE TypeApplications      #-}
 {-# LANGUAGE UndecidableInstances  #-}
+
 {-# OPTIONS_GHC -fno-warn-orphans  #-}
 
 module HipChat.Util
@@ -16,6 +18,8 @@ module HipChat.Util
   , unwrappedUnaryRecords
   ) where
 
+import           Control.Lens     (defaultFieldRules, lensField, makeLensesWith,
+                                   mappingNamer, (&), (.~), (<>~))
 import           Data.Aeson.Types (FromJSON, GFromJSON, GToJSON, Options (..),
                                    Parser, SumEncoding (UntaggedValue), ToJSON,
                                    Value, Zero, allNullaryToStringTag,
@@ -27,12 +31,13 @@ import           Data.Char        (isLower, isUpper, toLower)
 import           Data.List        (intercalate)
 import           Data.Proxy       (Proxy (Proxy))
 import           Data.Typeable    (Typeable, tyConName, typeRep, typeRepTyCon)
-
 import           GHC.Generics
+
+makeLensesWith (defaultFieldRules & lensField .~ mappingNamer (\s -> ['_' : s])) 'Options
 
 standardAesonOpts :: Typeable a => Proxy a -> Options
 standardAesonOpts p = Options
-  { fieldLabelModifier     = uncapitalise . drop (numCharsInType p)
+  { fieldLabelModifier     = uncapitalise . drop (numCharsInTyCon p)
   , constructorTagModifier = uncapitalise
   , allNullaryToStringTag  = True
   , omitNothingFields      = True
@@ -44,10 +49,10 @@ camelCase :: Options -> Options
 camelCase = id
 
 snakeCase :: Options -> Options
-snakeCase o = o { fieldLabelModifier = toSnakeCase . fieldLabelModifier o}
+snakeCase = _fieldLabelModifier <>~ toSnakeCase
 
 unwrappedUnaryRecords :: Options -> Options
-unwrappedUnaryRecords o = o { unwrapUnaryRecords = True }
+unwrappedUnaryRecords = _unwrapUnaryRecords .~ True
 
 class ToFromJSON a where
   toJSON' :: a -> Value
@@ -72,8 +77,8 @@ instance {-# OVERLAPPABLE #-} ToFromJSON a => ToJSON a where
 instance {-# OVERLAPPABLE #-} ToFromJSON a => FromJSON a where
   parseJSON = parseJSON'
 
-numCharsInType :: forall a. Typeable a => Proxy a -> Int
-numCharsInType = length . tyConName . typeRepTyCon . typeRep
+numCharsInTyCon :: forall a. Typeable a => Proxy a -> Int
+numCharsInTyCon = length . tyConName . typeRepTyCon . typeRep
 
 uncapitalise :: String -> String
 uncapitalise []      = []
